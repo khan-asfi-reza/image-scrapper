@@ -3,4 +3,5 @@ djangorestframework
 Pillow
 requests
 drf_yasg
-bs4 celery
+bs4
+celery
