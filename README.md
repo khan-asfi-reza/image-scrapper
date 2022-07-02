@@ -1,6 +1,10 @@
 <div align="center">
+    <div style="display: flex; gap: 10px; justify-content: center; align-items: center">
+        <img height="50" width="50" alt="Logo" src="https://github.com/khan-asfi-reza/image-scrapper/blob/master/.github/python.png"/>
+        <img height="50" width="50" alt="Logo" src="https://github.com/khan-asfi-reza/image-scrapper/blob/master/.github/api.png"/>
+    </div>
     <h1>Image Scrapper API</h1>
-    <img src="https://github.com/khan-asfi-reza/image-scrapper/actions/workflows/ci.yaml/badge.svg"/>
+    <img alt="Logo" src="https://github.com/khan-asfi-reza/image-scrapper/actions/workflows/ci.yaml/badge.svg"/>
     <p>Image Scrapper scraps a given link and gets images and stores them in the database, later can be queried, not only the image is saved but also meta data [image format, height, width, size etc] are stored</p>
 </div>
 
