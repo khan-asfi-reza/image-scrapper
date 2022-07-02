@@ -64,8 +64,14 @@ to test the API
 
 ## API Docs 📑
 
+-----------
 <div>
+<h3>URL API</h3>
 <h3>⭐ /api/url</h3>
+<p>
+Takes URL, and returns List of images scrapped from the URL,
+Saves those images along with meta data in the database
+</p>
 <div style="display: flex; gap: 10px; align-items: center">
     <p style="background: #248FB2; padding: 5px 10px; color: white">POST</p>
     <h4>/api/url/</h4>
@@ -103,12 +109,57 @@ to test the API
   }
 ]
 ```
-
+-----------
+-----------
 <div>
-<h3>⭐ /api/image/&lt;id:int&gt;</h3>
+<h3>Image Details API</h3>
+<p>
+Returns Metadata and Image Link, if given a valid image id
+</p>
+<h3>⭐ /api/image/details/{:id}</h3>
+<div style="display: flex; gap: 10px; align-items: center">
+    <p style="background: #2D24B2FF; padding: 5px 10px; color: white">GET</p>
+    <h4>/api/url/</h4>
+</div>
+</div>
+
+#### Payload
+```json
+{
+  "url": "https://example.com"
+}
+```
+
+#### Response Sample
+
+`Status Code: 200`
+
+```json
+{
+    "id": 0,
+    "image_url": "https://example.com/api/image/0",
+    "image_name": "string",
+    "parent_url": {
+      "id": 0,
+      "link": "https://example.com"
+    },
+    "original_url": "https://example.com",
+    "height": 0,
+    "width": 0,
+    "mode": "string",
+    "format": "string",
+    "created": "2019-08-24T14:15:22Z",
+    "updated": "2019-08-24T14:15:22Z"
+  }
+```
+-----------
+-----------
+<div>
+<h3>⭐ image/{:id}</h3>
+<p>Image Preview Route, it will send image content to the client</p>
 <div style="display: flex; gap: 10px; align-items: center">
     <p style="background: #2d24b2; padding: 5px 10px; color: white">GET</p>
-    <h4>/api/image/&lt;id:int&gt;</h4>
+    <h4>image/&lt;id:int&gt;</h4>
 </div>
 </div>
 
@@ -117,7 +168,8 @@ to test the API
 |Parameter|Type|Default|Options|
 |---|---|---|---|
 |width|integer/string|Image default width|`small`, `medium`, `large`|
-|height|integer|Image default height|
+|height|integer|Image default height|`small`, `medium`, `large`
+|quality|integer|100|Any number between 1 to 100
 
 Note:
 If height and width both are given, only width will work to maintain aspect ratio

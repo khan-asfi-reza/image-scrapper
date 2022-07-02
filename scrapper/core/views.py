@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, RetrieveAPIView
 from rest_framework.response import Response
 
 from scrapper.core.models import Image
@@ -47,6 +47,15 @@ class URLViewSet(GenericAPIView):
         return Response(url.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ImageDetailsView(RetrieveAPIView):
+    """
+    Returns Image Details
+    """
+    lookup_field = "id"
+    serializer_class = ImageSerializer
+    queryset = Image.objects.get_queryset()
+
+
 class ImageView(View):
     """
     Returns the Image using saved Image ID
@@ -71,6 +80,20 @@ class ImageView(View):
             return int(req_size)
         return self.size.get(req_size, None)
 
+    @staticmethod
+    def get_quality(request) -> Optional[int]:
+        """
+        If request query contains quality return quality else return None
+        Args:
+            request: HTTP Request Dictionary
+
+        Returns: int | None
+        """
+        req_size: str = request.GET.get("quality", "")
+        if req_size.isdigit():
+            return int(req_size)
+        return 100
+
     def get(self, request, pk) -> HttpResponse:
         """
         Sends image to client using Image ID
@@ -86,7 +109,11 @@ class ImageView(View):
         image = get_object_or_404(self.model, pk=pk)
         width = self.get_image_size("width", request)
         height = self.get_image_size("height", request)
-        cropped_image = image.get_image_with_size(width=width, height=height)
+        quality = self.get_quality(request)
+        cropped_image = image.get_image_with_size(
+            width=width,
+            height=height,
+        )
         response = HttpResponse(content_type=f"image/{image.format_lower}")
-        cropped_image.save(response, image.format)
+        cropped_image.save(response, image.format, quality=quality)
         return response
