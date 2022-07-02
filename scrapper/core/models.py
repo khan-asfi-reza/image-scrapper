@@ -6,16 +6,16 @@ from urllib.parse import urlparse
 import PIL
 import requests
 import urllib3
+from PIL import Image as PilImage
 from bs4 import BeautifulSoup
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.db import models
 from django.db.models import QuerySet
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.crypto import get_random_string
-from PIL import Image as PilImage
 
 from scrapper.core.utils import check_if_valid_url, normalize_url, validate_url
 
@@ -116,7 +116,7 @@ class Address(AbstractModel):
 
 @receiver(post_save, sender=Address)
 def normalize_url_before_save(
-    sender: Address, instance: Address, *args, **kwargs
+        sender: Address, instance: Address, *args, **kwargs
 ):
     """
     Normalizes url before saving it, removes unnecessary slashes
@@ -191,7 +191,7 @@ class Image(AbstractModel):
         return f"{self.image_name}"
 
     def get_image_with_size(
-        self, width: Optional[float] = None, height: Optional[float] = None
+            self, width: Optional[float] = None, height: Optional[float] = None
     ) -> Any:
         """
         Returns image with custom width or height
@@ -286,8 +286,8 @@ class Image(AbstractModel):
             )
             img_object.save()
         except (
-            PIL.UnidentifiedImageError,
-            urllib3.exceptions.LocationParseError,
+                PIL.UnidentifiedImageError,
+                urllib3.exceptions.LocationParseError,
         ):
             pass
 
