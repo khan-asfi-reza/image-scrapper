@@ -168,7 +168,8 @@ Returns Metadata and Image Link, if given a valid image id
 |Parameter|Type|Default|Options|
 |---|---|---|---|
 |width|integer/string|Image default width|`small`, `medium`, `large`|
-|height|integer|Image default height|
+|height|integer|Image default height|`small`, `medium`, `large`
+|quality|integer|100|Any number between 1 to 100
 
 Note:
 If height and width both are given, only width will work to maintain aspect ratio
