@@ -1,0 +1,22 @@
+[tool.black]
+line-length = 79
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.tox
+  | \.env.*
+  | venv
+  | _build
+  | build
+  | dist
+  | examples
+  | docs
+)\
+'''
+
+[tool.pylint]
+ignore-patterns="__init__.py,apps.py,urls.py"
+ignore="migrations tests"
+disable=["E1101","E1133", "C0114", "R0903", "W0707", "W0613"]
