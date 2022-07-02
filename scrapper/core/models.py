@@ -191,7 +191,9 @@ class Image(AbstractModel):
         return f"{self.image_name}"
 
     def get_image_with_size(
-            self, width: Optional[float] = None, height: Optional[float] = None
+            self,
+            width: Optional[float] = None,
+            height: Optional[float] = None,
     ) -> Any:
         """
         Returns image with custom width or height
@@ -267,7 +269,7 @@ class Image(AbstractModel):
             pillow_image = PilImage.open(BytesIO(response.content))
             file_bytes = BytesIO()
             file_name = (
-                f"{get_random_string(length=32)}"
+                f"{get_random_string(length=32)}."
                 f"{pillow_image.get_format_mimetype().split('/')[-1]}"
             )
             img_object = cls.objects.create(
