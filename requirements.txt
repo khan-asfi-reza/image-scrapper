@@ -4,5 +4,6 @@ Pillow
 requests
 drf_yasg
 bs4
+gunicorn
 celery
 djangorestframework-simplejwt[crypto]
