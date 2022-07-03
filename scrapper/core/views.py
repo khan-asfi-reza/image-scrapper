@@ -3,58 +3,9 @@ from typing import Optional
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views import View
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
-from rest_framework.generics import GenericAPIView, RetrieveAPIView
-from rest_framework.response import Response
 
 from scrapper.core.const import SUPPORTED_FORMATS
 from scrapper.core.models import Image
-from scrapper.core.serializers import ImageSerializer, URLCreateSerializer
-
-
-class URLViewSet(GenericAPIView):
-    """
-    URL ViewSet
-    Examples:
-        api: '/url'
-        method: POST
-        data: {url: str}
-
-    This view takes URL Parameter and returns list of images, those are in the URL document
-
-    """
-
-    serializer_class = URLCreateSerializer
-
-    @swagger_auto_schema(responses={200: ImageSerializer(many=True)})
-    def post(self, request) -> Response:
-        """
-        Takes URL, and returns List of images scrapped from the URL
-
-        Args:
-            request: HTTP Request Dictionary
-
-        Returns: Response
-
-        """
-        url = self.serializer_class(data=request.data)
-        if url.is_valid():
-            queryset = url.save()
-            serializer = ImageSerializer(
-                instance=queryset, many=True, context={"request": request}
-            )
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(url.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ImageDetailsView(RetrieveAPIView):
-    """
-    Returns Image Details
-    """
-    lookup_field = "id"
-    serializer_class = ImageSerializer
-    queryset = Image.objects.get_queryset()
 
 
 class ImageView(View):
