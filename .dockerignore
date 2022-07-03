@@ -1,0 +1,7 @@
+venv
+.gitignore
+.github
+.pre-commit-config.yaml
+pyproject.toml
+setup.cfg
+README.md
