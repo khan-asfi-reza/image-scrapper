@@ -5,3 +5,4 @@ requests
 drf_yasg
 bs4
 celery
+djangorestframework-simplejwt[crypto]
