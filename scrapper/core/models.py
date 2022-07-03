@@ -13,7 +13,7 @@ from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.db import models
 from django.db.models import QuerySet
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils.crypto import get_random_string
 
@@ -89,7 +89,8 @@ class Address(AbstractModel):
     @classmethod
     def save_url_with_images(cls, url: str) -> QuerySet:
         """
-
+        Given a URL, it saves the URL as Address Object
+        and scrapes the url to store the images
         Args:
             url: URL to scrap the images from
 
@@ -99,7 +100,7 @@ class Address(AbstractModel):
         # Checks if a url already exists in the database which has been scrapped
         # Otherwise create the url record
         url_object, created = cls.objects.get_or_create(url=url)
-        # Utility function that scrapes data from a html file
+        # Image Saving Procedure
         return Image.save_multiple_images(url_object)
 
     @classmethod
@@ -112,6 +113,22 @@ class Address(AbstractModel):
         addresses = cls.objects.all()
         for address in addresses:
             cls.save_url_with_images(address.url)
+
+    @classmethod
+    def restore_or_create(cls, url) -> QuerySet:
+        """
+        Given a URL, it saves the URL as Address Object
+        and Deletes previous Images and Restore them
+        Args:
+            url: URL to scrap the images from
+
+        Returns: QuerySet<Image>, scrapped and saved images
+        """
+        # Checks if a url already exists in the database which has been scrapped
+        # Otherwise create the url record
+        url_object, created = cls.objects.get_or_create(url=url)
+        # Utility function that scrapes data from a html file
+        return Image.remove_all_and_restore(url_object)
 
 
 @receiver(post_save, sender=Address)
@@ -294,6 +311,15 @@ class Image(AbstractModel):
             pass
 
     @classmethod
+    def __save_multi_from_url(cls, images: List[str], url: Address):
+        for image in images:
+            cls.save_image(image, url)
+
+    @classmethod
+    def get_queryset_by_url(cls, parent_url: Address):
+        return cls.objects.filter(parent_url=parent_url)
+
+    @classmethod
     def save_multiple_images(cls, url: Address) -> QuerySet:
         """
         Given URL Address, it saves all images scrapped from the url in the database and media
@@ -320,10 +346,40 @@ class Image(AbstractModel):
         # Get cached Image Link
         cached_image = cache.get(url.url, [])
         # Remove common links
-        all_images = list(set(images) - set(cached_image))
+        all_images = list(set(images) - set(cached_image))  # Removes Duplicates
         # Set new cache
         cache.set(url.url, list(all_images) + list(cached_image), None)
-        for image in all_images:
-            cls.save_image(image, url)
+        # Save Multiple Images
+        cls.__save_multi_from_url(all_images, url=url)
+        # Return Queryset
+        return cls.get_queryset_by_url(parent_url=url)
 
-        return cls.objects.filter(parent_url=url)
+    @classmethod
+    def remove_all_and_restore(cls, url: Address) -> QuerySet:
+        """
+        Removes all available images and re-scrape images
+        Removes from file storage as well
+        Args:
+            url: URL String
+
+        Returns:
+
+        """
+        # Delete all available images
+        cls.objects.all().delete()
+        # Restore images
+        images = list(set(cls.get_images_from_url_response(url.url)))  # Remove duplicates
+        cls.__save_multi_from_url(images, url=url)
+        # Set Cache
+        cache.set(url.url, images, None)
+        # Return Queryset
+        return cls.get_queryset_by_url(parent_url=url)
+
+
+@receiver(post_delete, sender=Image)
+def post_save_image(sender, instance, *args, **kwargs):
+    """ Clean Old Image file """
+    try:
+        instance.image.delete(save=False)
+    except FileNotFoundError:
+        pass
