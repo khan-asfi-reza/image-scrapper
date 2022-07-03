@@ -6,16 +6,16 @@ from urllib.parse import urlparse
 import PIL
 import requests
 import urllib3
-from PIL import Image as PilImage
 from bs4 import BeautifulSoup
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.db import models
 from django.db.models import QuerySet
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.utils.crypto import get_random_string
+from PIL import Image as PilImage
 
 from scrapper.core.utils import check_if_valid_url, normalize_url, validate_url
 
@@ -133,7 +133,7 @@ class Address(AbstractModel):
 
 @receiver(post_save, sender=Address)
 def normalize_url_before_save(
-        sender: Address, instance: Address, *args, **kwargs
+    sender: Address, instance: Address, *args, **kwargs
 ):
     """
     Normalizes url before saving it, removes unnecessary slashes
@@ -208,9 +208,9 @@ class Image(AbstractModel):
         return f"{self.image_name}"
 
     def get_image_with_size(
-            self,
-            width: Optional[float] = None,
-            height: Optional[float] = None,
+        self,
+        width: Optional[float] = None,
+        height: Optional[float] = None,
     ) -> Any:
         """
         Returns image with custom width or height
@@ -305,8 +305,8 @@ class Image(AbstractModel):
             )
             img_object.save()
         except (
-                PIL.UnidentifiedImageError,
-                urllib3.exceptions.LocationParseError,
+            PIL.UnidentifiedImageError,
+            urllib3.exceptions.LocationParseError,
         ):
             pass
 
@@ -346,7 +346,9 @@ class Image(AbstractModel):
         # Get cached Image Link
         cached_image = cache.get(url.url, [])
         # Remove common links
-        all_images = list(set(images) - set(cached_image))  # Removes Duplicates
+        all_images = list(
+            set(images) - set(cached_image)
+        )  # Removes Duplicates
         # Set new cache
         cache.set(url.url, list(all_images) + list(cached_image), None)
         # Save Multiple Images
@@ -368,7 +370,9 @@ class Image(AbstractModel):
         # Delete all available images
         cls.objects.all().delete()
         # Restore images
-        images = list(set(cls.get_images_from_url_response(url.url)))  # Remove duplicates
+        images = list(
+            set(cls.get_images_from_url_response(url.url))
+        )  # Remove duplicates
         cls.__save_multi_from_url(images, url=url)
         # Set Cache
         cache.set(url.url, images, None)
@@ -378,7 +382,7 @@ class Image(AbstractModel):
 
 @receiver(post_delete, sender=Image)
 def post_save_image(sender, instance, *args, **kwargs):
-    """ Clean Old Image file """
+    """Clean Old Image file"""
     try:
         instance.image.delete(save=False)
     except FileNotFoundError:
