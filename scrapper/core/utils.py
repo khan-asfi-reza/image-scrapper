@@ -78,6 +78,7 @@ def normalize_url(url: str) -> str:
         correct_segments = ["http:"] + correct_segments
     correct_segments[0] = correct_segments[0] + "/"
     normalized_url = "/".join(correct_segments)
-    normalized_url = (normalized_url[:-1] if normalized_url[-1] == '/'
-                      else normalized_url)
+    normalized_url = (
+        normalized_url[:-1] if normalized_url[-1] == "/" else normalized_url
+    )
     return normalized_url
