@@ -1,11 +1,14 @@
 from typing import Optional
 
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+import requests
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.views import View
+from django.views.generic import TemplateView, View
 
 from scrapper.core.const import SUPPORTED_FORMATS
-from scrapper.core.models import Image
+from scrapper.core.models import Image, Address
 
 
 class ImageView(View):
@@ -75,3 +78,33 @@ class ImageView(View):
         response = HttpResponse(content_type=f"image/{content_type}")
         cropped_image.save(response, content_type.capitalize(), quality=quality)
         return response
+
+
+class IndexView(View):
+    """
+    Home Page View
+    """
+    template_name = 'index.html'
+
+    def get(self, request):
+        context = {
+            "image_scrape_view": request.build_absolute_uri(reverse("scrape-view"))
+        }
+        return render(request, self.template_name, context)
+
+
+class ScrapeFormView(View):
+
+    @staticmethod
+    def post(request, **kwargs):
+        api_url = request.build_absolute_uri(reverse("url-view"))
+        resp = requests.post(api_url, json={"url": request.POST.get("url")})
+        if resp.status_code == 200:
+            return render(
+                request,
+                template_name='image_list.html',
+                context={
+                    "data": resp.json()
+                }
+            )
+        return Http404("Invalid URL")
