@@ -1,7 +1,9 @@
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import include, path
+from django.views.generic import RedirectView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from scrapper.config import settings
@@ -40,4 +42,8 @@ urlpatterns = [
     ),
     path("", IndexView.as_view(), name="index"),
     path("view/images", ScrapeFormView.as_view(), name="scrape-view"),
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url=staticfiles_storage.url("favicon.ico")),
+    ),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
