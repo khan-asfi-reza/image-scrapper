@@ -112,14 +112,13 @@ Saves those images along with meta data in the database
 -----------
 -----------
 <div>
-<h3>Image Details API</h3>
+<h3> ⭐Image Details API</h3>
 <p>
 Returns Metadata and Image Link, if given a valid image id
 </p>
-<h3>⭐ /api/image/details/{:id}</h3>
 <div style="display: flex; gap: 10px; align-items: center">
     <p style="background: #2D24B2FF; padding: 5px 10px; color: white">GET</p>
-    <h4>/api/url/</h4>
+    <h4>/api/images/details/{:id}</h4>
 </div>
 </div>
 
@@ -155,7 +154,49 @@ Returns Metadata and Image Link, if given a valid image id
 -----------
 -----------
 <div>
-<h3>⭐ image/{:id}</h3>
+<h3> ⭐Image List API</h3>
+<p>
+Returns List of saved Metadata and Image Link, if given a valid Parent URL(The URL that was used to scrape the images)
+</p>
+<div style="display: flex; gap: 10px; align-items: center">
+    <p style="background: #2D24B2FF; padding: 5px 10px; color: white">GET</p>
+    <h4>/api/images/list/{:parent_url}</h4>
+</div>
+</div>
+
+#### Payload
+```json
+{
+  "url": "https://example.com"
+}
+```
+
+#### Response Sample
+
+`Status Code: 200`
+
+```json
+{
+    "id": 0,
+    "image_url": "https://example.com/api/image/0",
+    "image_name": "string",
+    "parent_url": {
+      "id": 0,
+      "link": "https://example.com"
+    },
+    "original_url": "https://example.com",
+    "height": 0,
+    "width": 0,
+    "mode": "string",
+    "format": "string",
+    "created": "2019-08-24T14:15:22Z",
+    "updated": "2019-08-24T14:15:22Z"
+  }
+```
+-----------
+-----------
+<div>
+<h3>⭐ Image Preview</h3>
 <p>Image Preview Route, it will send image content to the client</p>
 <div style="display: flex; gap: 10px; align-items: center">
     <p style="background: #2d24b2; padding: 5px 10px; color: white">GET</p>
