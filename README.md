@@ -366,11 +366,11 @@ If height and width both are given, only width will work to maintain aspect rati
 #### Example
 
 ```
-api/image/2?width=small
+/image/2?width=small
 ```
 or
 ```
-api/image/2?width=678
+/image/2?width=678
 ```
 
 
