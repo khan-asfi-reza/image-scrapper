@@ -1,0 +1,35 @@
+<div class="bg-white">
+        <div class="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+            <h2 class="text-2xl font-extrabold tracking-tight text-gray-900">Scraped Result</h2>
+
+            <div class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+
+                {% for img_data in data %}
+                <div class="group ">
+                    <div  class="relative w-full grid place-items-center min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
+                        <img src="{{ img_data.image_url }}"
+                             alt=""
+
+                             class="m-auto object-center w-full h-full object-contain max-w-full max-h-full">
+                         <a target="_blank" href="{{ img_data.image_url }}">
+                                    <span aria-hidden="true" class="absolute inset-0"></span>
+                                </a>
+                    </div>
+                    <div class="mt-4 flex justify-between">
+                        <div>
+                            <h3 class="text-sm text-gray-700">
+                                <a class="hover:text-indigo-500" href="{{ img_data.original_url }}">
+                                    Original URL
+                                </a>
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-500">Mode: {{ img_data.mode }}</p>
+                            <p class="mt-1 text-sm text-gray-500">Format: {{ img_data.format }}</p>
+                        </div>
+                        <p class="text-sm font-medium text-gray-900">{{ img_data.width }}&times;{{ img_data.height }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                <!-- More products... -->
+            </div>
+        </div>
+    </div>
