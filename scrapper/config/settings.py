@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    'rest_framework_simplejwt',
+    "rest_framework_simplejwt",
     "drf_yasg",
     "scrapper.core",
 ]
@@ -126,11 +126,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_ROOT = BASE_DIR / 'client' / 'root'
+STATIC_ROOT = BASE_DIR / "client" / "root"
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'client' / 'static'
-]
+STATICFILES_DIRS = [BASE_DIR / "client" / "static"]
 
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
@@ -144,10 +142,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Rest Framework Settings
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ]
 }
-
