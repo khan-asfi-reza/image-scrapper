@@ -1,11 +1,10 @@
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import include, path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from scrapper.config import settings
 from scrapper.config.docs import SchemaView
 from scrapper.core.views import ImageView, IndexView, ScrapeFormView
 
@@ -13,12 +12,18 @@ urlpatterns = [
     # Admin
     path("admin/", admin.site.urls, name="admin-view"),
     # Auth
-    path("logout/",
-         LogoutView.as_view(template_name="accounts/logout.html"),
-         name="logout"),
+    path(
+        "logout/",
+        LogoutView.as_view(template_name="accounts/logout.html"),
+        name="logout",
+    ),
     # Auth API
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path(
+        "api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"
+    ),
+    path(
+        "api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
+    ),
     # Core API
     path("api/", include("scrapper.core.urls")),
     path("image/<int:pk>", ImageView.as_view(), name="image-view"),
@@ -33,6 +38,6 @@ urlpatterns = [
         SchemaView.with_ui("redoc", cache_timeout=0),
         name="schema-redoc",
     ),
-    path('', IndexView.as_view(), name="index"),
-    path('view/images', ScrapeFormView.as_view(), name="scrape-view")
-]
+    path("", IndexView.as_view(), name="index"),
+    path("view/images", ScrapeFormView.as_view(), name="scrape-view"),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
