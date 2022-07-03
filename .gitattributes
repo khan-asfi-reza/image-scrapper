@@ -1,0 +1,7 @@
+*.pl linguist-detectable=true
+*.js linguist-detectable=false
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+*.htm inguist-detectable=false
+public/libs/* linguist-vendored
+docs/* linguist-documentation
