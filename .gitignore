@@ -132,4 +132,5 @@ scrapper/media/*/*.jpg
 scrapper/media/*/*.svg
 scrapper/media/*/*.webp
 scrapper/media/*/*.jpeg
+scrapper/media/*/*.gif
 
