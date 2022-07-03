@@ -3,8 +3,8 @@ services:
   backend:
     build: .
     volumes:
-      - .:/backend
+      - .:/scrapperAPI
     ports:
       - "8000:8000"
-    container_name: backend
+    container_name: scrapperAPI
     command: python manage.py runserver 0.0.0.0:8000

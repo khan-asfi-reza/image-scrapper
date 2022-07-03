@@ -127,9 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-scrapper/media/*.png
-scrapper/media/*.jpg
-scrapper/media/*.svg
-scrapper/media/*.webp
-scrapper/media/*.jpeg
+scrapper/media/*/*.png
+scrapper/media/*/*.jpg
+scrapper/media/*/*.svg
+scrapper/media/*/*.webp
+scrapper/media/*/*.jpeg
 

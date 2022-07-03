@@ -18,42 +18,63 @@
 - `Pillow`: Image processing
 - `Celery`: Background async task handling
 - `drf_yasg`: Swagger API Docs 
+- `djangorestframework-simplejwt[crypto]` For JWT Authentication
 
 ## How To Get Started 🎇
 
-###1. Clone this repo 👮
+Get started with the project, install dependencies and run the project.
+View /api-docs for API Documentation
+
+- #### Clone this repo 👮
+
 ```shell
 git clone 
 ```
 
-###2. Activate virtualenv 🅰️
+- #### Activate virtualenv 🅰️
 ```shell
 virtualenv venv
 ```
-For `windows`:
+- For `windows` 🪟
 ```
 E:/image-scrapper/venv/scripts/activate
 ```
 
-For `MacOS/Linux`
+- For `MacOS/Linux` 🍏
 ```
 source venv/bin/activate
 ```
 
-###3. Install Requirements 🔨️
+- #### Install Requirements 🔨️
 ```
 pip install -r requirements.txt
 ```
 
-###4. Test Application 🧪
+- #### Test Application 🧪
 ```
 python manage.py test
 ```
 
-###5. Run server
+#### Run server
 ```
 python manage.py runserver
 ```
+
+## Docker 🐋
+
+If you have docker and want to use docker
+
+#### Build Docker Image
+```
+docker build --tag scrapper-api .
+```
+
+#### Run Docker Image
+
+```
+docker publish scrapper-api 8000:8000 
+```
+
 ## Dev Docs 📑
 
 ### Important!
@@ -62,9 +83,17 @@ After running the server, you can visit `/api-docs` to get a swagger interface,
 you can interfere with the api from `api-docs/`, it will automatically provide a beautiful UI and interface
 to test the API
 
+OR
+
+Use `/redoc` for Redoc Documentation
+
 ## API Docs 📑
 
+URL
+------
+
 -----------
+
 <div>
 <h3>URL API</h3>
 <h3>⭐ /api/url</h3>
@@ -110,16 +139,18 @@ Saves those images along with meta data in the database
 ]
 ```
 -----------
------------
+
+Image
+-------
+
 <div>
-<h3>Image Details API</h3>
+<h3> ⭐Image Details API</h3>
 <p>
 Returns Metadata and Image Link, if given a valid image id
 </p>
-<h3>⭐ /api/image/details/{:id}</h3>
 <div style="display: flex; gap: 10px; align-items: center">
     <p style="background: #2D24B2FF; padding: 5px 10px; color: white">GET</p>
-    <h4>/api/url/</h4>
+    <h4>/api/images/details/{:id}</h4>
 </div>
 </div>
 
@@ -153,9 +184,166 @@ Returns Metadata and Image Link, if given a valid image id
   }
 ```
 -----------
+<div>
+<h3> ⭐Image Details API</h3>
+<p>
+Returns Metadata and Image Link, if given a valid image id
+</p>
+<div style="display: flex; gap: 10px; align-items: center">
+    <p style="background: #b22439; padding: 5px 10px; color: white">DELETE</p>
+    <h4>/api/images/details/{:id}</h4>
+</div>
+</div>
+
+#### Payload
+```json
+{
+  "url": "https://example.com"
+}
+```
+
+#### Response Sample
+
+`Status Code: 204`
+
+-----------
+
+<div>
+<h3> ⭐Image List API</h3>
+<p>
+Returns List of saved Metadata and Image Link, if given a valid Parent URL(The URL that was used to scrape the images)
+</p>
+<div style="display: flex; gap: 10px; align-items: center">
+    <p style="background: #248FB2FF; padding: 5px 10px; color: white">POST</p>
+    <h4>/api/images/list/</h4>
+</div>
+</div>
+
+#### Payload
+```json
+{
+  "url": "https://example.com"
+}
+```
+
+#### Response Sample
+
+`Status Code: 200`
+
+```json
+{
+    "id": 0,
+    "image_url": "https://example.com/api/image/0",
+    "image_name": "string",
+    "parent_url": {
+      "id": 0,
+      "link": "https://example.com"
+    },
+    "original_url": "https://example.com",
+    "height": 0,
+    "width": 0,
+    "mode": "string",
+    "format": "string",
+    "created": "2019-08-24T14:15:22Z",
+    "updated": "2019-08-24T14:15:22Z"
+  }
+```
+-----------
+
+
+<div>
+<h3> ⭐Image Query API</h3>
+<p>
+Returns List of saved Metadata and Image Link, if given a valid Original Image URL
+</p>
+<div style="display: flex; gap: 10px; align-items: center">
+    <p style="background: #248FB2FF; padding: 5px 10px; color: white">POST</p>
+    <h4>/api/images/query/</h4>
+</div>
+</div>
+
+#### Payload
+```json5
+{
+  "url": "https://example.com/image/image.jpeg" // Original Image URL
+}
+```
+
+#### Response Sample
+
+`Status Code: 200`
+
+```json
+{
+    "id": 0,
+    "image_url": "https://example.com/api/image/0",
+    "image_name": "string",
+    "parent_url": {
+      "id": 0,
+      "link": "https://example.com"
+    },
+    "original_url": "https://example.com",
+    "height": 0,
+    "width": 0,
+    "mode": "string",
+    "format": "string",
+    "created": "2019-08-24T14:15:22Z",
+    "updated": "2019-08-24T14:15:22Z"
+  }
+```
+-----------
+
+
+<div>
+<h3> ⭐Image Restore API</h3>
+<p>
+Deletes all previous images and re-scrape and restore them
+</p>
+<div style="display: flex; gap: 10px; align-items: center">
+    <p style="background: #248FB2FF; padding: 5px 10px; color: white">POST</p>
+    <h4>/api/images/query/</h4>
+</div>
+</div>
+
+#### Payload
+```json5
+{
+  "url": "https://example.com" // Original Image URL
+}
+```
+
+#### Response Sample
+
+`Status Code: 200`
+
+```json
+{
+    "id": 0,
+    "image_url": "https://example.com/api/image/0",
+    "image_name": "string",
+    "parent_url": {
+      "id": 0,
+      "link": "https://example.com"
+    },
+    "original_url": "https://example.com",
+    "height": 0,
+    "width": 0,
+    "mode": "string",
+    "format": "string",
+    "created": "2019-08-24T14:15:22Z",
+    "updated": "2019-08-24T14:15:22Z"
+  }
+```
+-----------
+
+## Routing Docs 🌐
+
+Image View
+------
+
 -----------
 <div>
-<h3>⭐ image/{:id}</h3>
+<h3>⭐ Image Preview</h3>
 <p>Image Preview Route, it will send image content to the client</p>
 <div style="display: flex; gap: 10px; align-items: center">
     <p style="background: #2d24b2; padding: 5px 10px; color: white">GET</p>
@@ -169,7 +357,8 @@ Returns Metadata and Image Link, if given a valid image id
 |---|---|---|---|
 |width|integer/string|Image default width|`small`, `medium`, `large`|
 |height|integer|Image default height|`small`, `medium`, `large`
-|quality|integer|100|Any number between 1 to 100
+|quality|integer|100|Any number between 1 to 100|
+|format|string|Image Default|"gif", "png", "jpeg", "jpg", "bmp", "webp"|
 
 Note:
 If height and width both are given, only width will work to maintain aspect ratio
