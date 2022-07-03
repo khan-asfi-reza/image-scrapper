@@ -1,15 +1,22 @@
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.generics import GenericAPIView, RetrieveDestroyAPIView, CreateAPIView
+from rest_framework.generics import (
+    CreateAPIView,
+    GenericAPIView,
+    RetrieveDestroyAPIView,
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from scrapper.core.models import Image
-from scrapper.core.permissions import IsAdminOrStaff, CanDeleteOrGet
+from scrapper.core.permissions import CanDeleteOrGet, IsAdminOrStaff
 from scrapper.core.serializers import (
-    URLCreateSerializer,
+    ImageOriginalURLQuerySerializer,
     ImageSerializer,
+    URLBaseSerializer,
+    URLCreateSerializer,
     URLDeleteAndRecreateSerializer,
-    URLBaseSerializer, ImageOriginalURLQuerySerializer)
+)
 
 
 class URLImageScrappingAPI(GenericAPIView):
@@ -17,9 +24,12 @@ class URLImageScrappingAPI(GenericAPIView):
     This view takes URL Parameter, scrapes images from the given URL
     and stores images along with meta data in the database
     """
+
     serializer_class = URLCreateSerializer
 
-    @swagger_auto_schema(responses={200: ImageSerializer(many=True)}, )
+    @swagger_auto_schema(
+        responses={200: ImageSerializer(many=True)},
+    )
     def post(self, request) -> Response:
         """
 
@@ -45,6 +55,7 @@ class URLImagesDeleteScrapeAPI(URLImageScrappingAPI):
     and recreate Image Instance after scraping
     Allow Only Admin Users and Staff Users
     """
+
     permission_classes = (IsAdminOrStaff,)
     serializer_class = URLDeleteAndRecreateSerializer
 
@@ -54,6 +65,7 @@ class ImageListAPI(URLImageScrappingAPI):
     Returns saved List of through parent URL,
     It does not scrap the URL, it returns only the saved Data
     """
+
     serializer_class = URLBaseSerializer
 
 
@@ -63,6 +75,7 @@ class ImageDetailsAPI(RetrieveDestroyAPIView):
     including Image Preview Link,
     Original Link and MetaData
     """
+
     permission_classes = (CanDeleteOrGet,)
     lookup_field = "id"
     serializer_class = ImageSerializer
@@ -74,9 +87,12 @@ class ImageOriginalURLQueryAPI(APIView):
     Performs query by `original_url` of the image,
     returns Image Data along with Metadata
     """
+
     serializer_class = ImageOriginalURLQuerySerializer
 
-    @swagger_auto_schema(responses={200: ImageSerializer(many=True)}, )
+    @swagger_auto_schema(
+        responses={200: ImageSerializer(many=True)},
+    )
     def post(self, request):
         """
         Args:
