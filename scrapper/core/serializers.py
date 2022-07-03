@@ -12,6 +12,7 @@ class URLBaseSerializer(serializers.Serializer):
     Contains URL Fields, Base Serializer Returns Stored Images
     when save method is fired
     """
+
     url = serializers.URLField(validators=[validate_url], required=True)
 
     def update(self, instance, validated_data):
@@ -35,9 +36,7 @@ class URLBaseSerializer(serializers.Serializer):
         Returns:
 
         """
-        return Image.objects.filter(
-            parent_url__url=validated_data.get("url")
-        )
+        return Image.objects.filter(parent_url__url=validated_data.get("url"))
 
 
 class URLCreateSerializer(URLBaseSerializer):
@@ -83,9 +82,7 @@ class URLDeleteAndRecreateSerializer(URLBaseSerializer):
 
         """
         try:
-            images = Address.restore_or_create(
-                validated_data.get("url", None)
-            )
+            images = Address.restore_or_create(validated_data.get("url", None))
         except DjangoValidationError:
             raise ValidationError({"url": "URL Does not exist"})
         return images
@@ -97,9 +94,7 @@ class ImageOriginalURLQuerySerializer(URLBaseSerializer):
     """
 
     def create(self, validated_data):
-        return Image.objects.filter(
-            original_url=validated_data.get("url")
-        )
+        return Image.objects.filter(original_url=validated_data.get("url"))
 
 
 class AddressSerializer(serializers.ModelSerializer):
