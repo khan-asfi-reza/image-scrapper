@@ -1,14 +1,14 @@
 from typing import Optional
 
 import requests
-from django.http import HttpResponse, Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, View
 
 from scrapper.core.const import SUPPORTED_FORMATS
-from scrapper.core.models import Image, Address
+from scrapper.core.models import Address, Image
 
 
 class ImageView(View):
@@ -72,11 +72,16 @@ class ImageView(View):
             width=width,
             height=height,
         )
-        content_type: str = (img_format if img_format in SUPPORTED_FORMATS
-                             else image.format_lower)
+        content_type: str = (
+            img_format
+            if img_format in SUPPORTED_FORMATS
+            else image.format_lower
+        )
 
         response = HttpResponse(content_type=f"image/{content_type}")
-        cropped_image.save(response, content_type.capitalize(), quality=quality)
+        cropped_image.save(
+            response, content_type.capitalize(), quality=quality
+        )
         return response
 
 
@@ -84,17 +89,19 @@ class IndexView(View):
     """
     Home Page View
     """
-    template_name = 'index.html'
+
+    template_name = "index.html"
 
     def get(self, request):
         context = {
-            "image_scrape_view": request.build_absolute_uri(reverse("scrape-view"))
+            "image_scrape_view": request.build_absolute_uri(
+                reverse("scrape-view")
+            )
         }
         return render(request, self.template_name, context)
 
 
 class ScrapeFormView(View):
-
     @staticmethod
     def post(request, **kwargs):
         api_url = request.build_absolute_uri(reverse("url-view"))
@@ -102,9 +109,7 @@ class ScrapeFormView(View):
         if resp.status_code == 200:
             return render(
                 request,
-                template_name='image_list.html',
-                context={
-                    "data": resp.json()
-                }
+                template_name="image_list.html",
+                context={"data": resp.json()},
             )
         return Http404("Invalid URL")
