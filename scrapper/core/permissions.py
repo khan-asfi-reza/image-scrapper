@@ -41,6 +41,6 @@ class CanDeleteOrGet(BasePermission):
 
         """
         user: User = request.user
-        return (request.method == "GET" or
-                (request.method == "POST" and (user.is_staff or user.is_superuser))
-                )
+        return request.method == "GET" or (
+            request.method == "POST" and (user.is_staff or user.is_superuser)
+        )
