@@ -18,6 +18,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: scrapper
+          POSTGRES_PORT: 5432
         # Set health checks to wait until postgres has started
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
@@ -32,5 +33,5 @@ jobs:
         pip install -r requirements.txt
     - name: Test with Django test
       env:
-        DATABASE_URL: postgres://postgres:postgres@localhost:5432/scrapper
+        DATABASE_URL: postgres://postgres:postgres@postgres:5432/scrapper
       run: python manage.py test
