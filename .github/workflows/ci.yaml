@@ -34,10 +34,5 @@ jobs:
         pip install -r requirements.txt
     - name: Test with Django test
       env:
-        TEST: 1
-        DATABASE_NAME: scrapper
-        DATABASE_HOST: localhost
-        DATABASE_PASSWORD: postgres
-        DATABASE_PORT: 5432
-        DATABASE_USER: postgres
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/scrapper
       run: python manage.py test
