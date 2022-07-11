@@ -84,15 +84,6 @@ WSGI_APPLICATION = "scrapper.config.wsgi.application"
 
 DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
 
-if os.environ.get("TEST", "0") == "1":
-    DATABASES["default"] = {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("DATABASE_NAME"),
-        "HOST": os.environ.get("DATABASE_HOST"),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
-        "PORT": os.environ.get("DATABASE_PORT"),
-        "USER": os.environ.get("DATABASE_USER"),
-    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
