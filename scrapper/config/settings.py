@@ -86,7 +86,7 @@ DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
 
 if os.environ.get("TEST", "0") == "1":
     DATABASES["default"] = {
-        "ENGINE": "django.db.backends.postgres",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": os.environ.get("DATABASE_NAME"),
         "HOST": os.environ.get("DATABASE_HOST"),
         "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
